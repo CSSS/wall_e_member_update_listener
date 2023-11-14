@@ -1,0 +1,25 @@
+version: '3' #docker-compose version
+# this exists primarily because I don't yet know how to make dynamic port binding for the wall_e_leveling_website
+# service so right now, master can't have a working website at the same time as any branch or PR being worked on
+services:  #Services that are needed for the wall_e app
+    wall_e_member_update_listener:
+        build:
+            context: ../
+            dockerfile: CI/Dockerfile
+        image: "${compose_project_name}_member_update_listener"
+        container_name: "${COMPOSE_PROJECT_NAME}_member_update_listener"
+        environment:
+            - basic_config__ENVIRONMENT
+            - basic_config__TOKEN
+            - basic_config__COMPOSE_PROJECT_NAME
+            - basic_config__DOCKERIZED
+            - database_config__WALL_E_DB_DBNAME
+            - database_config__WALL_E_DB_USER
+            - database_config__WALL_E_DB_PASSWORD
+            - database_config__TYPE
+        restart: unless-stopped
+        networks:
+            - wall_e_network
+
+networks:
+  wall_e_network:

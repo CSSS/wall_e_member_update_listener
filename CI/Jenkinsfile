@@ -1,0 +1,72 @@
+pipeline {
+    agent any
+    options {
+        disableConcurrentBuilds()
+        buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '10'))
+    }
+    stages {
+        stage('Deploy to PROD Guild') {
+            when {
+                branch 'master'
+            }
+            steps {
+                withCredentials(
+                    [
+                        string(credentialsId: 'WALL_E_PROD_DISCORD_BOT_TOKEN', variable: 'WALL_E_PROD_DISCORD_BOT_TOKEN'),
+                        string(credentialsId: 'WALL_E_DB_PASSWORD', variable: 'WALL_E_DB_PASSWORD'),
+                    ]
+                ) {
+                    sh('''
+export basic_config__TOKEN=${WALL_E_PROD_DISCORD_BOT_TOKEN};
+export basic_config__COMPOSE_PROJECT_NAME=PRODUCTION_MASTER;
+export basic_config__ENVIRONMENT=PROD;
+export COMPOSE_PROJECT_NAME=PRODUCTION_MASTER;
+export basic_config__DOCKERIZED=1;
+
+export database_config__TYPE=postgreSQL;
+export database_config__WALL_E_DB_DBNAME=csss_discord_db;
+export database_config__WALL_E_DB_USER=wall_e;
+export database_config__WALL_E_DB_PASSWORD=${WALL_E_DB_PASSWORD};
+export DISCORD_NOTIFICATION_MESSAGE_FILE=OUTPUT;
+
+./CI/deploy.sh;
+                    ''')
+                }
+            }
+        }
+    }
+    post {
+        always {
+            script {
+                if (fileExists('OUTPUT')){
+                    summary=readFile('OUTPUT').trim()
+                    theTitle = "ISSUE DETECTED"
+                    status = false
+                }else{
+                    if (currentBuild.currentResult == "SUCCESS"){
+                        theTitle = "SUCCESS"
+                        summary = "No issues detected"
+                        status = true
+                    }else{
+                        theTitle = "ISSUE DETECTED"
+                        summary = "Please look at Jenkins for more info"
+                        status = false
+                    }
+                }
+
+                withCredentials([string(credentialsId: 'DISCORD_WEBHOOK', variable: 'WEBHOOKURL')]) {
+                    discordSend description: "Branch or PR Name: " + BRANCH_NAME + '\n' + summary, footer: env.GIT_COMMIT, link: env.BUILD_URL, successful: status, title: theTitle, webhookURL: '$WEBHOOKURL'
+                }
+            }
+            cleanWs(
+            cleanWhenAborted: true,
+            cleanWhenFailure: true,
+            cleanWhenNotBuilt: false,
+            cleanWhenSuccess: true,
+            cleanWhenUnstable: true,
+            deleteDirs: true,
+            disableDeferredWipeout: true
+        )
+        }
+    }
+}

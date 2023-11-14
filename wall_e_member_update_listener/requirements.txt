@@ -1,0 +1,16 @@
+yarl<1.2
+bs4
+parsedatetime==2.4
+aiohttp==3.8.5
+git+https://github.com/Rapptz/discord.py@9e2f2cb3af30c9d4c6d3ff4f7850832c05488d6f#egg=discord.py[voice]
+
+
+# needed for interacting with db
+asgiref==3.7.2
+Django==3.2.20
+sqlparse==0.4.4
+typing_extensions==4.7.1
+psycopg2-binary
+
+wall-e-models
+python-dateutil
