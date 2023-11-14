@@ -32,6 +32,43 @@ bot = commands.Bot(command_prefix='.', intents=Intents.all())
 
 @bot.listen(name="on_ready")
 async def ready():
+    bot.loop.create_task(
+        write_to_bot_log_channel(
+            member_update_listener_log, member_update_listener_debug_log_file_absolute_path,
+            1174032003109240902
+        )
+    )
+    bot.loop.create_task(
+        write_to_bot_log_channel(
+            member_update_listener_log, member_update_listener_warn_log_file_absolute_path,
+            1174032047552086107
+        )
+    )
+    bot.loop.create_task(
+        write_to_bot_log_channel(
+            member_update_listener_log, member_update_listener_error_log_file_absolute_path,
+            1174032090069737493
+        )
+    )
+
+    bot.loop.create_task(
+        write_to_bot_log_channel(
+            member_update_listener_log, discordpy_debug_log_file_absolute_path,
+            1174032132851634177
+        )
+    )
+    bot.loop.create_task(
+        write_to_bot_log_channel(
+            member_update_listener_log, discordpy_warn_log_file_absolute_path,
+            1174032176065560777
+        )
+    )
+    bot.loop.create_task(
+        write_to_bot_log_channel(
+            member_update_listener_log, discordpy_error_log_file_absolute_path,
+            1174032220227375235
+        )
+    )
     member_update_listener_log.info("member update listener is now up")
 
 
@@ -143,49 +180,5 @@ async def write_to_bot_log_channel(logger, file_path, chan_id):
             line = f.readline()
         await asyncio.sleep(1)
 
-
-bot.loop.create_task(
-    write_to_bot_log_channel(
-        member_update_listener_log, member_update_listener_debug_log_file_absolute_path,
-        chan_id
-    )
-)
-bot.loop.create_task(
-    write_to_bot_log_channel(
-        member_update_listener_log, member_update_listener_warn_log_file_absolute_path,
-        chan_id
-    )
-)
-bot.loop.create_task(
-    write_to_bot_log_channel(
-        member_update_listener_log, member_update_listener_error_log_file_absolute_path,
-        chan_id
-    )
-)
-
-bot.loop.create_task(
-    write_to_bot_log_channel(
-        member_update_listener_log, discordpy_debug_log_file_absolute_path,
-        chan_id
-    )
-)
-bot.loop.create_task(
-    write_to_bot_log_channel(
-        member_update_listener_log, discordpy_warn_log_file_absolute_path,
-        chan_id
-    )
-)
-bot.loop.create_task(
-    write_to_bot_log_channel(
-        member_update_listener_log, discordpy_error_log_file_absolute_path,
-        chan_id
-    )
-)
-
-
-member_update_listener_log.debug(
-    f"[file_uploading.py start_file_uploading()] {file_path} successfully opened and connection to "
-    f"{channel_name} channel has been made"
-)
 
 bot.run(token=os.environ["basic_config__TOKEN"], log_handler=DiscordPyDebugStreamHandler())
