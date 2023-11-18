@@ -4,6 +4,7 @@ import os
 
 import aiohttp
 import django
+from discord.app_commands import CommandNotFound
 from django.core.wsgi import get_wsgi_application
 
 
@@ -77,6 +78,11 @@ async def func(ctx, error):
     if type(error) != commands.CommandNotFound:
         member_update_listener_log.error(error)
 
+async def slash_func(interaction, error):
+    if type(error) != CommandNotFound:
+        member_update_listener_log.error(error)
+
+bot.tree.on_error = slash_func
 
 @bot.listen(name="on_member_update")
 async def on_member_update(member_before_update, member_after_update):
