@@ -99,7 +99,7 @@ async def new_member(member: discord.Member):
     await mark_user_as_updated(member)
 
 
-async def mark_user_as_updated(member: discord.Member):
+async def mark_user_as_updated(member):
     user_to_update = await UpdatedUser.outdated_user_profile(member)
     if user_to_update is not None:
         member_update_listener_log.info(f"marking user {member} as needing an update")
