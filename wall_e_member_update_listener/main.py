@@ -28,7 +28,7 @@ from discord.ext import commands
 from wall_e_models.models import UpdatedUser
 
 
-bot = commands.Bot(command_prefix='.', intents=Intents.all())
+bot = commands.Bot(command_prefix='.', intents=Intents.all(), help_command=None)
 
 
 @bot.listen(name="on_ready")
