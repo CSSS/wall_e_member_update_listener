@@ -14,6 +14,8 @@ export prod_website_image_name_lower_case=$(echo "${prod_website_container_name}
 docker rm -f ${prod_website_container_name} || true
 docker image rm -f ${prod_website_image_name_lower_case} || true
 
+git submodule update --init --recursive
+
 export compose_project_name=$(echo "${COMPOSE_PROJECT_NAME}" | awk '{print tolower($0)}')
 export docker_compose_file="CI/docker-compose.yml"
 docker-compose -f "${docker_compose_file}" up -d

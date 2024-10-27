@@ -8,6 +8,10 @@ COPY wall_e_member_update_listener/__init__.py __init__.py
 COPY wall_e_member_update_listener/main.py main.py
 COPY wall_e_member_update_listener/setup_logger.py setup_logger.py
 COPY wall_e_member_update_listener/requirements.txt requirements.txt
+
+COPY .wall_e_models/wall_e_models wall_e_models
+COPY .wall_e_models/requirements.txt wall_e_models_requirements.txt
+
 COPY CI/wait-for-postgres.sh wait-for-postgres.sh
 COPY CI/startup.sh startup.sh
 
