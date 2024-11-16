@@ -12,5 +12,4 @@ sqlparse==0.4.4
 typing_extensions==4.7.1
 psycopg2-binary
 
-wall-e-models==0.56
 python-dateutil
