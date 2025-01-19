@@ -86,7 +86,7 @@ bot.tree.on_error = slash_func
 @bot.listen(name="on_member_update")
 async def on_member_update(member_before_update, member_after_update):
     await mark_user_as_updated(member_after_update)
-    await UserPoint.mark_user_as_updated(member.id)
+    await UserPoint.mark_user_as_updated(member_after_update.id)
 
 @bot.listen(name="on_message")
 async def on_message(message):
