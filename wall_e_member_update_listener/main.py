@@ -25,8 +25,7 @@ import discord
 from discord import Intents
 from discord.ext import commands
 
-from wall_e_models.models import UpdatedUser
-
+from wall_e_models.models import UpdatedUser, UserPoint
 
 bot = commands.Bot(command_prefix='.', intents=Intents.all(), help_command=None)
 
@@ -87,24 +86,21 @@ bot.tree.on_error = slash_func
 @bot.listen(name="on_member_update")
 async def on_member_update(member_before_update, member_after_update):
     await mark_user_as_updated(member_after_update)
-
+    await UserPoint.mark_user_as_updated(member.id)
 
 @bot.listen(name="on_message")
 async def on_message(message):
     await mark_user_as_updated(message.author)
 
-
 @bot.listen(name="on_member_join")
 async def new_member(member: discord.Member):
     await mark_user_as_updated(member)
-
 
 async def mark_user_as_updated(member):
     user_to_update = await UpdatedUser.outdated_user_profile(member)
     if user_to_update is not None:
         member_update_listener_log.info(f"marking user {member} as needing an update")
         await UpdatedUser(user_point=user_to_update).async_save()
-
 
 discordpy_logger_name = "discord.py"
 
