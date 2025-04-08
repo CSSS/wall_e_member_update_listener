@@ -146,6 +146,9 @@ async def write_to_bot_log_channel(logger, file_path, chan_id):
     )
     f = open(file_path, 'r')
     f.seek(0)
+    channels_with_rate_limit = chan_id in [
+        1174032176065560777, 1174032132851634177
+    ]
     while not bot.is_closed():
         f.flush()
         line = f.readline()
@@ -179,6 +182,8 @@ async def write_to_bot_log_channel(logger, file_path, chan_id):
                     raise Exception(
                         f'[log_channel.py write_to_bot_log_channel()] write to channel failed\n{exc_str}'
                     )
+                if channels_with_rate_limit:
+                    await asyncio.sleep(3)
             line = f.readline()
         await asyncio.sleep(1)
 
