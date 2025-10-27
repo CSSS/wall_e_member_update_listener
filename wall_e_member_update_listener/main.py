@@ -147,7 +147,7 @@ async def write_to_bot_log_channel(logger, file_path, chan_id):
     f = open(file_path, 'r')
     f.seek(0)
     channels_with_rate_limit = chan_id in [
-        1174032176065560777, 1174032132851634177
+        1174032003109240902
     ]
     while not bot.is_closed():
         f.flush()
